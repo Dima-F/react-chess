@@ -25,6 +25,13 @@ export class Cell {
         return this.figure === null;
     }
 
+    isEnemy(target: Cell): boolean {
+        if(target.figure) {
+            return this.figure?.color !== target.figure.color;
+        }
+        return false;
+    }
+
     isEmptyVertical(target: Cell): boolean {
         if(this.x !== target.x) {
             return false;
@@ -73,10 +80,22 @@ export class Cell {
         return true;
     }
 
+    addLostFigure(figure: Figure) {
+        figure.color === Colors.BLACK ?
+            this.board.lostBlackFigures.push(figure) :
+            this.board.lostWhiteFigures.push(figure);
+
+    }
+
     moveFigure(target: Cell) {
-        if(this.figure?.canMove(target)) {
-            this.figure.moveFigure(target);
+        if(this.figure && this.figure?.canMove(target)) {
+            this.figure.moveFigure(target)
+            if (target.figure) {
+              console.log(target.figure)
+              this.addLostFigure(target.figure);
+            }
             target.setFigure(this.figure);
+            this.figure = null;
         }
     }
 
